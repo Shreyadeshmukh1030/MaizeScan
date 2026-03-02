@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+ultralytics
+opencv-python-headless
+sqlalchemy
+pydantic[email]
+pandas
+reportlab
+python-multipart
+jinja2
+passlib[bcrypt]
+python-jose[cryptography]
+python-dotenv
+psycopg2-binary
