@@ -12,6 +12,8 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import FarmerGuidePage from './pages/FarmerGuidePage';
 import ProfilePage from './pages/ProfilePage';
+import axios from 'axios';
+import { Navigate } from 'react-router-dom';
 
 const App = () => {
   return (
@@ -21,9 +23,18 @@ const App = () => {
   );
 };
 
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+};
+
 const AppContent = () => {
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [user, setUser] = useState(null);
 
   // Hide navigation for auth pages
   const isAuthPage = ['/login', '/register'].includes(location.pathname);
@@ -32,6 +43,20 @@ const AppContent = () => {
   useEffect(() => {
     // Auto-close sidebar on mobile
     if (window.innerWidth < 1024) setIsSidebarOpen(false);
+
+    // Fetch user data if not on auth/landing page and we have a token
+    if (!isAuthPage && !isLanding) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        axios.get('http://localhost:8000/users/me', {
+          headers: { Authorization: `Bearer ${token}` }
+        }).then(res => setUser(res.data))
+          .catch(() => {
+            localStorage.removeItem('token');
+            setUser(null);
+          });
+      }
+    }
   }, [location.pathname]);
 
   if (isAuthPage) {
@@ -53,17 +78,17 @@ const AppContent = () => {
         {isLanding ? (
           <PublicHeader />
         ) : (
-          <InternalHeader isOpen={isSidebarOpen} toggle={() => setIsSidebarOpen(!isSidebarOpen)} />
+          <InternalHeader user={user} isOpen={isSidebarOpen} toggle={() => setIsSidebarOpen(!isSidebarOpen)} />
         )}
 
         <main style={{ flex: 1 }}>
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/detect" element={<DetectionPage />} />
-            <Route path="/reports" element={<ReportsPage />} />
-            <Route path="/analytics" element={<DashboardPage />} />
+            <Route path="/detect" element={<ProtectedRoute><DetectionPage user={user} /></ProtectedRoute>} />
+            <Route path="/reports" element={<ProtectedRoute><ReportsPage user={user} /></ProtectedRoute>} />
+            <Route path="/analytics" element={<ProtectedRoute><DashboardPage user={user} /></ProtectedRoute>} />
             <Route path="/guide" element={<FarmerGuidePage />} />
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/profile" element={<ProtectedRoute><ProfilePage user={user} /></ProtectedRoute>} />
           </Routes>
         </main>
       </div>
@@ -92,7 +117,7 @@ const PublicHeader = () => (
   </nav>
 );
 
-const InternalHeader = ({ isOpen, toggle }) => (
+const InternalHeader = ({ user, isOpen, toggle }) => (
   <header style={{
     padding: '1.25rem 2.5rem', background: 'white', borderBottom: '1px solid #f1f5f9',
     display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 50
@@ -102,7 +127,7 @@ const InternalHeader = ({ isOpen, toggle }) => (
         {isOpen ? <X size={20} /> : <Menu size={20} />}
       </button>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-        <img src="/images/logo.png" alt="Logo" style={{ height: '32px' }} />
+        <img src="/images/logo.png" alt="Logo" style={{ height: '35px', width: '35px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary-dark)' }} />
         <h2 style={{ fontSize: '1.1rem', fontWeight: 900, letterSpacing: '-0.5px' }}>
           MAIZESCAN <span style={{ color: 'var(--text-light)', fontWeight: 500, marginLeft: '0.5rem' }}>// AGRI-CORE DASHBOARD</span>
         </h2>
@@ -110,54 +135,75 @@ const InternalHeader = ({ isOpen, toggle }) => (
     </div>
     <Link to="/profile" style={{ textDecoration: 'none', display: 'flex', gap: '1.25rem', alignItems: 'center', color: 'inherit' }}>
       <div style={{ textAlign: 'right' }}>
-        <div style={{ fontWeight: 900, fontSize: '0.95rem', color: 'var(--primary-dark)' }}>Dr. Aris Thorne</div>
-        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-light)', textTransform: 'uppercase' }}>Analyst ID: MS-4892</div>
+        <div style={{ fontWeight: 900, fontSize: '0.95rem', color: 'var(--primary-dark)' }}>{user?.full_name || 'Agri Operator'}</div>
+        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-light)', textTransform: 'uppercase' }}>Analyst ID: MS-{user?.id || '0000'}</div>
       </div>
-      <div style={{ width: '45px', height: '45px', borderRadius: '1rem', background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)', boxShadow: '0 4px 10px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
-        <img src="/images/profile.png" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      <div style={{
+        width: '45px', height: '45px', borderRadius: '1rem',
+        background: 'var(--gradient-lush)', display: 'flex',
+        alignItems: 'center', justifyContent: 'center', color: 'white',
+        fontWeight: 900, boxShadow: '0 4px 10px rgba(0,0,0,0.05)', overflow: 'hidden'
+      }}>
+        {user?.full_name?.charAt(0) || 'U'}
       </div>
     </Link>
   </header>
 );
 
-const Sidebar = ({ isOpen, toggle }) => (
-  <div style={{
-    width: isOpen ? '300px' : '0',
-    transition: 'width 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-    background: '#1b4332',
-    overflow: 'hidden',
-    color: 'white',
-    display: 'flex',
-    flexDirection: 'column',
-    zIndex: 60,
-    boxShadow: '10px 0 40px rgba(0,0,0,0.1)'
-  }}>
-    <div style={{ padding: '2.5rem', display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2.5rem' }}>
-      <img src="/images/logo.png" alt="Logo" style={{ height: '50px', background: 'white', padding: '5px', borderRadius: '10px' }} />
-      <span style={{ fontSize: '1.75rem', fontWeight: 950, color: 'white', letterSpacing: '-1.5px' }}>MaizeScan</span>
-    </div>
+const Sidebar = ({ isOpen, toggle }) => {
+  const logout = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+  };
 
-    <div style={{ flex: 1, padding: '0 1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-      <SidebarLink to="/analytics" icon={<LayoutDashboard size={22} />} label="Analytics Feed" />
-      <SidebarLink to="/detect" icon={<Scan size={22} />} label="Live Inspection" />
-      <SidebarLink to="/reports" icon={<FileText size={22} />} label="Audit Trail" />
-      <SidebarLink to="/guide" icon={<BookOpen size={22} />} label="Farmer Education" />
-      <SidebarLink to="/profile" icon={<User size={22} />} label="Account Identity" />
+  return (
+    <div style={{
+      width: isOpen ? '300px' : '0',
+      transition: 'width 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+      background: '#1b4332',
+      overflow: 'hidden',
+      color: 'white',
+      display: 'flex',
+      flexDirection: 'column',
+      zIndex: 60,
+      boxShadow: '10px 0 40px rgba(0,0,0,0.1)'
+    }}>
+      <div style={{ padding: '2.5rem', display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2.5rem' }}>
+        <img src="/images/logo.png" alt="Logo" style={{ height: '60px', width: '60px', borderRadius: '50%', border: '3px solid rgba(255,255,255,0.2)', objectFit: 'cover' }} />
+        <span style={{ fontSize: '1.75rem', fontWeight: 950, color: 'white', letterSpacing: '-1.5px' }}>MaizeScan</span>
+      </div>
 
-      <div style={{ height: '1px', background: 'rgba(255,255,255,0.1)', margin: '1.5rem 0' }} />
+      <div style={{ flex: 1, padding: '0 1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        <SidebarLink to="/analytics" icon={<LayoutDashboard size={22} />} label="Analytics Feed" />
+        <SidebarLink to="/detect" icon={<Scan size={22} />} label="Live Inspection" />
+        <SidebarLink to="/reports" icon={<FileText size={22} />} label="Audit Trail" />
+        <SidebarLink to="/guide" icon={<BookOpen size={22} />} label="Farmer Education" />
+        <SidebarLink to="/profile" icon={<User size={22} />} label="Account Identity" />
 
-      <SidebarLink to="/" icon={<LogOut size={22} />} label="Power Off" />
-    </div>
+        <div style={{ height: '1px', background: 'rgba(255,255,255,0.1)', margin: '1.5rem 0' }} />
 
-    <div className="glass-panel" style={{ padding: '1.5rem', margin: '1.5rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
-      <div style={{ fontSize: '0.7rem', fontWeight: 900, opacity: 0.5, marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px' }}>AI Engine Status</div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-        <div className="recording-status" style={{ background: '#22c55e', width: '10px', height: '10px' }} />
-        <span style={{ fontSize: '0.9rem', fontWeight: 800 }}>YOLOv8 Core Online</span>
+        <button onClick={logout} style={{
+          background: 'transparent',
+          border: 'none',
+          cursor: 'pointer',
+          padding: '0',
+          width: '100%',
+          textAlign: 'left'
+        }}>
+          <SidebarLink to="/login" icon={<LogOut size={22} />} label="Power Off" />
+        </button>
+      </div>
+
+      <div className="glass-panel" style={{ padding: '1.5rem', margin: '1.5rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 900, opacity: 0.5, marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px' }}>AI Engine Status</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div className="recording-status" style={{ background: '#22c55e', width: '10px', height: '10px' }} />
+          <span style={{ fontSize: '0.9rem', fontWeight: 800 }}>YOLOv8 Core Online</span>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const SidebarLink = ({ to, icon, label }) => {
   const location = useLocation();

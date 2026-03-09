@@ -203,12 +203,12 @@ const LandingPage = () => {
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }}>
                     <motion.div whileHover={{ y: -10 }} className="glass-panel" style={{ padding: '2rem', border: '1px solid #f1f5f9' }}>
-                        <img src="/images/roadmap_2.jpg" alt="Detection Roadmap" style={{ width: '100%', borderRadius: '1.5rem', marginBottom: '2rem', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }} />
+                        <img src="/images/roadmap_1.jpg" alt="Detection Roadmap" style={{ width: '100%', borderRadius: '1.5rem', marginBottom: '2rem', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }} />
                         <h3 style={{ fontSize: '1.5rem', fontWeight: 900, marginBottom: '1rem' }}>1. Detection & Analysis Core</h3>
                         <p style={{ color: 'var(--text-light)', lineHeight: 1.6 }}>Our neural networks identify multi-seed clusters and apply real-time 5-class classification with 98% confidence scoring.</p>
                     </motion.div>
                     <motion.div whileHover={{ y: -10 }} className="glass-panel" style={{ padding: '2rem', border: '1px solid #f1f5f9' }}>
-                        <img src="/images/roadmap_1.jpg" alt="Grading Roadmap" style={{ width: '100%', borderRadius: '1.5rem', marginBottom: '2rem', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }} />
+                        <img src="/images/roadmap_2.jpg" alt="Grading Roadmap" style={{ width: '100%', borderRadius: '1.5rem', marginBottom: '2rem', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }} />
                         <h3 style={{ fontSize: '1.5rem', fontWeight: 900, marginBottom: '1rem' }}>2. Grading & Recommendation</h3>
                         <p style={{ color: 'var(--text-light)', lineHeight: 1.6 }}>Automated Grade A/B/C assignments with expert agricultural recommendations for sowing, milling, or feed use.</p>
                     </motion.div>

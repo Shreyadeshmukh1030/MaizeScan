@@ -11,8 +11,8 @@ from dotenv import load_dotenv
 import numpy as np
 import cv2
 import io
-import models, schemas, database, detection
-from database import engine, get_db
+from . import models, schemas, database, detection
+from .database import engine, get_db
 
 # Load env variables from .env file
 # Load environment variables from the .env file in the backend directory
@@ -34,7 +34,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

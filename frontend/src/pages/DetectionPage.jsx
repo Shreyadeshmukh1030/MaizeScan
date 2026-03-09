@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import { Play, Square, Camera, RefreshCw, CheckCircle2, AlertTriangle, FileText, BarChart3, BookOpen, Trash2, ShieldCheck, Zap } from 'lucide-react';
+import { Play, Square, Camera, RefreshCw, CheckCircle2, AlertTriangle, FileText, BarChart3, BookOpen, Trash2, ShieldCheck, Zap, Layers } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,7 +16,7 @@ const CLASS_CONFIG = {
     Worst: { color: '#000000', text: 'white', label: 'Worst' }
 };
 
-const DetectionPage = () => {
+const DetectionPage = ({ user }) => {
     const navigate = useNavigate();
     const [isBatchActive, setIsBatchActive] = useState(false);
     const [batchId, setBatchId] = useState(null);
@@ -27,6 +27,10 @@ const DetectionPage = () => {
     const [uploadedImage, setUploadedImage] = useState(null);
     const [isProcessing, setIsProcessing] = useState(false);
     const [isBackendDown, setIsBackendDown] = useState(false);
+
+    // Heatmap State
+    const [showHeatmap, setShowHeatmap] = useState(false);
+    const [heatmapPoints, setHeatmapPoints] = useState([]);
 
     // UI Refs for scaling
     const containerRef = useRef(null);
@@ -70,6 +74,7 @@ const DetectionPage = () => {
         const id = `BATCH-${Math.floor(1000 + Math.random() * 9000)}`;
         setBatchId(id);
         setCounts(INITIAL_COUNTS);
+        setHeatmapPoints([]);
         setIsBatchActive(true);
     };
 
@@ -149,6 +154,20 @@ const DetectionPage = () => {
             const res = await axios.post(`${API_URL}/detect`, formData);
             setDetections(res.data);
             setIsBackendDown(false);
+
+            // Update Heatmap Points
+            const newPoints = res.data.map(d => ({
+                x: (d.box[0] + d.box[2]) / 2,
+                y: (d.box[1] + d.box[3]) / 2,
+                label: d.label,
+                id: Math.random()
+            }));
+
+            setHeatmapPoints(prev => {
+                const combined = [...prev, ...newPoints];
+                return combined.slice(-100); // Keep last 100 points for performance
+            });
+
             if (isBatchActive) {
                 const newCounts = { ...counts };
                 res.data.forEach(d => { if (newCounts.hasOwnProperty(d.label)) newCounts[d.label]++; });
@@ -202,6 +221,23 @@ const DetectionPage = () => {
                     <p style={{ color: 'var(--text-light)', fontWeight: 600 }}>Batch ID: {isBatchActive ? batchId : 'No Session Active'}</p>
                 </motion.div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <button
+                        onClick={() => setShowHeatmap(!showHeatmap)}
+                        className="glass-panel btn"
+                        style={{
+                            padding: '0.6rem 1.2rem',
+                            background: showHeatmap ? 'var(--primary)' : 'white',
+                            color: showHeatmap ? 'white' : 'var(--text-main)',
+                            fontWeight: 800,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            border: 'none',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        <Layers size={18} /> {showHeatmap ? 'HIDE HEATMAP' : 'SHOW HEATMAP'}
+                    </button>
                     {!isBackendDown && (
                         <div className="glass-panel" style={{ padding: '0.6rem 1.2rem', color: '#00C853', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                             <div style={{ width: 8, height: 8, background: '#00C853', borderRadius: '50%' }} /> AI ENGINE ACTIVE
@@ -214,9 +250,6 @@ const DetectionPage = () => {
                             </motion.div>
                         )}
                     </AnimatePresence>
-                    <div className="glass-panel" style={{ padding: '0.6rem 1.2rem', fontWeight: 700 }}>
-                        {isUsingCamera ? 'LIVE CAMERA MODE' : 'IMAGE MODE'}
-                    </div>
                 </div>
             </div>
 
@@ -227,6 +260,30 @@ const DetectionPage = () => {
                         <video ref={(el) => { videoRef.current = el; mediaRef.current = el; }} autoPlay playsInline muted style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                     ) : (
                         <img ref={mediaRef} src={uploadedImage} alt="Analysis" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                    )}
+
+                    {/* HEATMAP LAYER */}
+                    {showHeatmap && (
+                        <div style={{ position: 'absolute', top: mediaScale.oy, left: mediaScale.ox, width: mediaScale.mw * mediaScale.s, height: mediaScale.mh * mediaScale.s, pointerEvents: 'none', zIndex: 5 }}>
+                            {heatmapPoints.map((pt, idx) => (
+                                <motion.div
+                                    key={pt.id}
+                                    initial={{ opacity: 0, scale: 0 }}
+                                    animate={{ opacity: [0, 0.6, 0], scale: [0, 1.5, 0.5] }}
+                                    transition={{ duration: 2 }}
+                                    style={{
+                                        position: 'absolute',
+                                        left: pt.x * mediaScale.s - 25,
+                                        top: pt.y * mediaScale.s - 25,
+                                        width: 50,
+                                        height: 50,
+                                        borderRadius: '50%',
+                                        background: `radial-gradient(circle, ${CLASS_CONFIG[pt.label]?.color || '#fff'} 0%, transparent 70%)`,
+                                        filter: 'blur(8px)'
+                                    }}
+                                />
+                            ))}
+                        </div>
                     )}
 
                     {/* OVERLAY BOXES */}
@@ -330,7 +387,7 @@ const DetectionPage = () => {
                     ) : (
                         <button className="btn" style={{ background: '#dc2626', color: 'white' }} onClick={endBatch}><Square size={18} /> End & Save</button>
                     )}
-                    <button className="btn btn-secondary" onClick={() => { setCounts(INITIAL_COUNTS); setDetections([]); }}><Trash2 size={18} /> Reset</button>
+                    <button className="btn btn-secondary" onClick={() => { setCounts(INITIAL_COUNTS); setDetections([]); setHeatmapPoints([]); }}><Trash2 size={18} /> Reset</button>
                 </div>
 
                 <div style={{ display: 'flex', gap: '1rem' }}>

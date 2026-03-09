@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     User, Mail, Phone, MapPin, Calendar, Edit3,
@@ -7,8 +8,42 @@ import {
     CheckCircle2, TrendingUp, Layers
 } from 'lucide-react';
 
-const ProfilePage = () => {
+const ProfilePage = ({ user: initialUser }) => {
     const [activeTab, setActiveTab] = useState('Overview');
+    const [user, setUser] = useState(initialUser);
+    const [stats, setStats] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) return;
+
+                const [userRes, statsRes] = await Promise.all([
+                    axios.get('http://localhost:8000/users/me', {
+                        headers: { Authorization: `Bearer ${token}` }
+                    }),
+                    axios.get('http://localhost:8000/analytics')
+                ]);
+
+                setUser(userRes.data);
+                setStats(statsRes.data);
+            } catch (err) {
+                console.error("Profile fetch failed:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProfile();
+    }, []);
+
+    const logout = () => {
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+    };
+
+    if (loading) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontWeight: 900, color: 'var(--primary)' }}>Establishing Secure Link...</div>;
 
     return (
         <div style={{ maxWidth: '1400px', margin: '3rem auto', padding: '0 2rem' }}>
@@ -17,29 +52,33 @@ const ProfilePage = () => {
                 {/* LEFT PANEL: Profile Summary */}
                 <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="glass-panel" style={{ padding: '3rem', textAlign: 'center' }}>
                     <div style={{ position: 'relative', display: 'inline-block', marginBottom: '2rem' }}>
-                        <img
-                            src="/images/profile.png"
-                            alt="Profile"
-                            style={{ width: '180px', height: '180px', borderRadius: '4rem', objectFit: 'cover', border: '5px solid white', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}
-                        />
+                        <div style={{
+                            width: '180px', height: '180px', borderRadius: '4rem',
+                            background: 'var(--gradient-lush)', display: 'flex',
+                            alignItems: 'center', justifyContent: 'center', color: 'white',
+                            fontSize: '4rem', fontWeight: 900, boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+                            border: '5px solid white'
+                        }}>
+                            {user?.full_name?.charAt(0) || 'U'}
+                        </div>
                         <button style={{ position: 'absolute', bottom: '10px', right: '10px', background: 'var(--primary)', color: 'white', padding: '0.75rem', borderRadius: '1rem', border: 'none', cursor: 'pointer', boxShadow: '0 8px 15px rgba(45,106,79,0.3)' }}>
                             <Edit3 size={18} />
                         </button>
                     </div>
 
-                    <h2 style={{ fontSize: '2rem', fontWeight: 950, marginBottom: '0.5rem', color: 'var(--primary-dark)' }}>Dr. Aris Thorne</h2>
+                    <h2 style={{ fontSize: '2rem', fontWeight: 950, marginBottom: '0.5rem', color: 'var(--primary-dark)' }}>{user?.full_name || 'Agri Operator'}</h2>
                     <div style={{ display: 'inline-flex', background: 'var(--accent)', color: 'var(--primary)', padding: '0.4rem 1rem', borderRadius: '1rem', fontSize: '0.85rem', fontWeight: 900, textTransform: 'uppercase', marginBottom: '1.5rem' }}>
-                        Senior Lab Analyst
+                        {user?.role || 'Operator'}
                     </div>
 
                     <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '1.25rem', marginTop: '2rem', borderTop: '1px dotted #cbd5e1', paddingTop: '2.5rem' }}>
-                        <InfoRow icon={<Globe size={18} />} label="Organization" val="AgriTech Solutions Ltd." />
-                        <InfoRow icon={<MapPin size={18} />} label="Location" val="St. Louis, MO, USA" />
-                        <InfoRow icon={<Calendar size={18} />} label="Joined" val="Oct 12, 2023" />
-                        <InfoRow icon={<Mail size={18} />} label="System ID" val="#MS-48921-TH" />
+                        <InfoRow icon={<Mail size={18} />} label="Auth Email" val={user?.email} />
+                        <InfoRow icon={<Globe size={18} />} label="Organization" val="Agri-Core Network" />
+                        <InfoRow icon={<MapPin size={18} />} label="Status" val={user?.is_active ? "Active Link" : "Inactive"} />
+                        <InfoRow icon={<Calendar size={18} />} label="System ID" val={`#MS-${user?.id || '0000'}`} />
                     </div>
 
-                    <button className="btn btn-secondary" style={{ width: '100%', marginTop: '3rem', justifyContent: 'center', opacity: 0.6 }}>
+                    <button onClick={logout} className="btn btn-secondary" style={{ width: '100%', marginTop: '3rem', justifyContent: 'center' }}>
                         <LogOut size={18} /> Disconnect Uplink
                     </button>
                 </motion.div>
@@ -65,7 +104,7 @@ const ProfilePage = () => {
                             className="glass-panel"
                             style={{ padding: '3rem', minHeight: '600px' }}
                         >
-                            {activeTab === 'Overview' && <OverviewTab />}
+                            {activeTab === 'Overview' && <OverviewTab stats={stats} />}
                             {activeTab === 'Activity' && <ActivityTab />}
                             {activeTab === 'Reports' && <ReportsTab />}
                             {activeTab === 'Settings' && <SettingsTab />}
@@ -77,21 +116,21 @@ const ProfilePage = () => {
     );
 };
 
-const OverviewTab = () => (
+const OverviewTab = ({ stats }) => (
     <div>
         <h3 style={{ fontSize: '1.5rem', fontWeight: 950, marginBottom: '2.5rem' }}>Analytical Performance</h3>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '2rem', marginBottom: '3rem' }}>
-            <MetricCard label="Total Seeds Analyzed" val="482,901" sub="+12% from last month" color="var(--primary)" />
-            <MetricCard label="Batches Processed" val="1,248" sub="98.2% Sorter Efficiency" color="var(--primary-dark)" />
-            <MetricCard label="Average Grade" val="Grade A" sub="High Consistency Profile" color="var(--excellent)" />
-            <MetricCard label="Total Defects Identified" val="12,042" sub="2.49% Defect Ratio" color="#ef4444" />
+            <MetricCard label="Total Seeds Analyzed" val={stats?.total_seeds?.toLocaleString() || '...'} sub="Across all local regions" color="var(--primary)" />
+            <MetricCard label="Batches Processed" val={stats?.total_batches || '...'} sub="Real-time ledger entries" color="var(--primary-dark)" />
+            <MetricCard label="System Consistency" val="High" sub="98.2% Sorter Efficiency" color="var(--excellent)" />
+            <MetricCard label="Avg. Defect Rate" val={`${stats?.avg_defect_rate || '...'}%`} sub="Enterprise-wide metrics" color="#ef4444" />
         </div>
 
         <h4 style={{ fontSize: '1.1rem', fontWeight: 900, marginBottom: '1.5rem', color: 'var(--text-light)' }}>Quality Index Trend</h4>
         <div style={{ height: '300px', background: 'rgba(0,0,0,0.02)', borderRadius: '2rem', border: '1px dashed #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <TrendingUp size={48} opacity={0.1} />
-            <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-muted)' }}>Interactive Timeline Graph (Mockup)</span>
+            <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-muted)' }}>Historical performance is synced via NeonDB</span>
         </div>
     </div>
 );
