@@ -1,7 +1,34 @@
-# SeedInsight AI - Smart Seed Quality Inspection
+# SeedInsight AI# 🌽 MaizeScan: AI Seed Quality Platform
 
-## Overview
-SeedInsight AI is a professional seed quality inspection system that uses computer vision (YOLOv8) to classify maize seeds into 5 quality categories: Excellent, Good, Average, Bad, and Worst. It provides real-time detection, batch management, grading logic, and a full analytics dashboard.
+MaizeScan is a premium, AI-driven platform for real-time seed grading and harvest analytics. Using Computer Vision (YOLOv8), it automates the identification of seed defects to ensure high agricultural standards.
+
+---
+
+## 🚀 Deployment Guide (Vercel)
+
+This project is configured for a **Monorepo Deployment** on Vercel.
+
+### **1. Connect to Vercel**
+1. Push your code to your GitHub repository: `https://github.com/Shreyadeshmukh1030/MaizeScan`.
+2. Go to [Vercel](https://vercel.com) and click **"Add New" -> "Project"**.
+3. Import your **MaizeScan** repository.
+
+### **2. Configure Environment Variables**
+In the Vercel Project Settings, add the following variables:
+*   `DATABASE_URL`: Your NeonDB / PostgreSQL connection string.
+*   `SECRET_KEY`: A secure random string for JWT.
+*   `ALGORITHM`: `HS256` (Default).
+*   `VITE_API_URL`: Leave blank (it will use the relative proxy).
+
+### **3. Build Settings**
+*   **Root Directory**: Leave as `.` (Root).
+*   **Vercel** will automatically detect the `vercel.json` and build both the **React Frontend** and **FastAPI Backend**.
+
+---
+
+> [!IMPORTANT]  
+> **Technical Note: Vercel Python Limits**  
+> Vercel Serverless Functions have a **50MB size limit** for Python deployments. AI libraries like `torch` and `ultralytics` often exceed this. If you encounter a "Function size too large" error, we recommend deploying the Backend to **Render** or **Railway** using a Dockerfile.
 
 ## Installation
 

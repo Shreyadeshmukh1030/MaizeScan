@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 import numpy as np
 import cv2
 import io
-from . import models, schemas, database, detection
+import models, schemas, database, detection
 from .database import engine, get_db
 
 # Load env variables from .env file
@@ -34,15 +34,16 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=["*"], # Allow all for deployment ease
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Initialize Detector
-# Important: Ensure the model path is absolute or correct relative to execution context
-detector = detection.SeedDetector(model_path="backend/seed_model.pt")
+# Robust path for cloud environments
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "seed_model.pt")
+detector = detection.SeedDetector(model_path=MODEL_PATH)
 
 # --- AUTH UTILS ---
 def verify_password(plain_password, hashed_password):

@@ -1,0 +1,12 @@
+.venv/
+node_modules/
+backend/__pycache__/
+gpu_venv/
+dataset/
+runs/
+label_debug/
+yolo_dataset/
+*.db
+backend/seed_insight.db
+backend/maizescan.db
+.git/
