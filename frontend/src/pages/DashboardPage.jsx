@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
     Database, TrendingUp, Users, AlertTriangle, Download,
     Calendar, Search, ArrowUpRight, ArrowDownRight, FileSpreadsheet,
-    Zap, LayoutDashboard, Scan, FileText, Info
+    Zap, LayoutDashboard, Scan, FileText, Info, DollarSign, Target, AlertCircle
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar } from 'recharts';
 import axios from 'axios';
@@ -73,7 +73,20 @@ const DashboardPage = ({ user }) => {
         a.click();
     };
 
-    const COLORS = ['#2d6a4f', '#52b788', '#e9c46a', '#e76f51', '#1e293b'];
+    // Palette: #051F20 (Dark), #235347 (Primary), #8EB69B (Muted), #DAF1DE (Mint)
+    const COLORS = ['#235347', '#52b788', '#8EB69B', '#b9dec9', '#051F20'];
+
+    // --- NEW: MARKET PRICE SIMULATION ---
+    const MARKET_PRICES = {
+        'A': 2400, // INR per Quintal
+        'B': 1850,
+        'C': 1200
+    };
+
+    const latestBatch = batches[0] || {};
+    const currentPrice = MARKET_PRICES[latestBatch.final_grade] || 0;
+    const potentialGain = MARKET_PRICES['A'] - currentPrice;
+    const isHighRisk = (latestBatch.bad_count + latestBatch.worst_count) > (latestBatch.total_count * 0.15);
 
     return (
         <div style={{ padding: '2rem', minHeight: '100vh', position: 'relative' }}>
@@ -88,24 +101,51 @@ const DashboardPage = ({ user }) => {
                 pointerEvents: 'none'
             }} />
 
-            {/* Header Area */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2.5rem' }}>
+            {/* --- NEW: HIGH RISK ALERT BANNER --- */}
+            <AnimatePresence>
+                {isHighRisk && (
+                    <motion.div 
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        className="glass-panel" 
+                        style={{ 
+                            background: 'linear-gradient(90deg, #fee2e2, #fef2f2)', 
+                            border: '1px solid #ef4444', 
+                            padding: '1.5rem', 
+                            marginBottom: '2rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '1.5rem'
+                        }}
+                    >
+                        <div style={{ background: '#ef4444', color: 'white', padding: '1rem', borderRadius: '1rem' }}>
+                            <AlertCircle size={28} />
+                        </div>
+                        <div>
+                            <h3 style={{ color: '#991b1b', fontWeight: 900, marginBottom: '0.2rem' }}>CRITICAL QUALITY RISK DETECTED</h3>
+                            <p style={{ color: '#b91c1c', fontSize: '0.9rem', fontWeight: 600 }}>
+                                Batch {latestBatch.batch_id} shows {(latestBatch.bad_percentage + latestBatch.worst_percentage).toFixed(1)}% contamination. 
+                                Immediate silo isolation recommended to prevent moisture-spread.
+                            </p>
+                        </div>
+                        <button className="btn btn-primary" style={{ marginLeft: 'auto', background: '#ef4444' }}>View Risk Report</button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
                 <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}>
-                    <h1 style={{ fontSize: '2.75rem', fontWeight: 950, color: 'var(--primary-dark)', marginBottom: '0.5rem', letterSpacing: '-0.03em' }}>
-                        Welcome back, <span className="gradient-text" style={{ background: 'linear-gradient(90deg, #10b981, #059669)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{user?.full_name?.split(' ')[0] || 'Operator'}!</span>
-                    </h1>
-                    <p style={{ color: 'var(--text-light)', fontWeight: 500, fontSize: '1.1rem' }}>
-                        {batches.length > 0
-                            ? `You've completed ${batches.length} inspections so far. Here's your impact.`
-                            : "Start your first batch inspection to see real-time analytics."}
-                    </p>
+                    <div className="section-tag" style={{ background: 'var(--primary-dark)', color: 'white', marginBottom: '1.25rem' }}>SaaS Enterprise Hub</div>
+                    <h2 style={{ fontSize: '2.5rem', fontWeight: 950, color: 'var(--primary-dark)', letterSpacing: '-1.5px', margin: 0 }}>
+                        Operational <span style={{ color: 'var(--primary-light)' }}>Intelligence</span>
+                    </h2>
                 </motion.div>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                    <div className="glass-panel" style={{ padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <Calendar size={18} />
-                        <span style={{ fontWeight: 700 }}>Aug 2024</span>
+                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                    <div className="glass-panel" style={{ padding: '0.6rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'white' }}>
+                        <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#22c55e' }} />
+                        <span style={{ fontWeight: 800, fontSize: '0.85rem' }}>SYSTEM_SYNC: ACTIVE</span>
                     </div>
-                    <button className="btn btn-primary" onClick={exportCSV} style={{ padding: '0.5rem 1.5rem' }}>
+                    <button className="btn btn-primary" onClick={exportCSV} style={{ padding: '0.6rem 1.5rem', borderRadius: '0.75rem' }}>
                         <Download size={18} /> Export Results
                     </button>
                 </div>
@@ -138,13 +178,46 @@ const DashboardPage = ({ user }) => {
                     sub="Overall quality health"
                 />
                 <KPICard
-                    icon={<Zap size={24} />}
-                    label="AI Accuracy"
-                    value={loading ? "..." : `${counters.accuracy}%`}
-                    trend="Optimized"
+                    icon={<DollarSign size={24} />}
+                    label="Revenue Velocity"
+                    value={loading ? "..." : `₹${(counters.seeds * 0.02).toFixed(0)}k`}
+                    trend="+12.5%"
                     trendUp={true}
-                    sub="YOLOv8 Core confidence"
+                    sub="Estimated market value"
                 />
+            </div>
+
+            {/* --- NEW: PROFIT MAXIMIZER WIDGET --- */}
+            <div className="glass-panel" style={{ padding: '2.5rem', marginBottom: '3rem', display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '3rem', background: 'var(--primary-dark)', color: 'white', border: 'none', position: 'relative', overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '250px', height: '250px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%', pointerEvents: 'none' }} />
+                
+                <div>
+                    <div className="section-tag" style={{ background: 'rgba(255,255,255,0.2)', color: 'white' }}>AI Profit Maximizer</div>
+                    <h2 style={{ fontSize: '2.2rem', fontWeight: 950, marginBottom: '1.5rem' }}>Your Current Batch Value: <span style={{ color: '#34d399' }}>₹{currentPrice}/quintal</span></h2>
+                    <p style={{ opacity: 0.8, fontSize: '1.1rem', maxWidth: '600px', lineHeight: 1.6 }}>
+                        Our AI models suggest that by removing {latestBatch.bad_count + latestBatch.worst_count} defective seeds from this batch, you can upgrade to **Grade A** quality.
+                    </p>
+                    <div style={{ display: 'flex', gap: '2rem', marginTop: '2.5rem' }}>
+                        <div>
+                            <div style={{ fontSize: '0.8rem', opacity: 0.6, textTransform: 'uppercase', fontWeight: 800 }}>Potential Profit Lift</div>
+                            <div style={{ fontSize: '2rem', fontWeight: 900, color: '#34d399' }}>+₹{potentialGain} <ArrowUpRight size={20} /></div>
+                        </div>
+                        <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)' }} />
+                        <div>
+                            <div style={{ fontSize: '0.8rem', opacity: 0.6, textTransform: 'uppercase', fontWeight: 800 }}>Market Rating</div>
+                            <div style={{ fontSize: '2rem', fontWeight: 900 }}>{latestBatch.final_grade || 'PND'} <span style={{ fontSize: '1rem', opacity: 0.5 }}>INDEX</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '2rem', borderRadius: '1.5rem', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
+                    <div style={{ background: '#34d399', color: '#064e3b', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                        <Target size={30} />
+                    </div>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 950, marginBottom: '0.5rem' }}>Enable Agri-Trader API</h3>
+                    <p style={{ fontSize: '0.85rem', opacity: 0.7, marginBottom: '1.5rem' }}>Automate your price listings on regional markets directly from MaizeScan results.</p>
+                    <button className="btn btn-primary" style={{ background: 'white', color: 'var(--primary-dark)', width: '100%' }}>Connect Marketplace</button>
+                </div>
             </div>
 
             {/* Visual Insights Section - Professional Roadmap Tiles */}

@@ -15,7 +15,8 @@ const RegisterPage = () => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            await axios.post('http://localhost:8000/register', {
+            const API_URL = import.meta.env.VITE_API_URL || '/api';
+            await axios.post(`${API_URL}/register`, {
                 email: formData.email,
                 password: formData.password,
                 full_name: formData.name,
@@ -33,43 +34,60 @@ const RegisterPage = () => {
 
     return (
         <div style={{
-            minHeight: '100vh',
+            height: '100vh',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: 'linear-gradient(rgba(27, 67, 50, 0.8), rgba(45, 106, 79, 0.4)), url("/images/auth_bg.png")',
+            background: 'linear-gradient(rgba(5, 31, 32, 0.45), rgba(5, 31, 32, 0.65)), url("/images/auth_bg.png")',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            backgroundAttachment: 'fixed',
-            padding: '4rem 2rem'
+            padding: '1rem',
+            overflow: 'hidden',
+            position: 'relative'
         }}>
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="hero-blur"
-                style={{ width: '100%', maxWidth: '700px', padding: '4rem', borderRadius: '4rem', boxShadow: '0 50px 100px rgba(0,0,0,0.3)' }}
-            >
-                <button onClick={() => navigate('/')} style={{ background: 'none', border: 'none', color: 'var(--primary-dark)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '3rem', fontWeight: 800, textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '1px' }}>
-                    <ArrowLeft size={16} /> Port back to Home
-                </button>
+            <Link to="/" style={{
+                position: 'absolute', top: '1.5rem', left: '1.5rem',
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                color: 'white', textDecoration: 'none', fontWeight: 700,
+                fontSize: '0.9rem', background: 'rgba(255,255,255,0.1)',
+                padding: '0.6rem 1rem', borderRadius: '0.75rem',
+                backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)',
+                transition: 'all 0.2s'
+            }} className="nav-link-back">
+                <ArrowLeft size={16} /> Back to Website
+            </Link>
 
-                <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-                    <div style={{ display: 'inline-flex', marginBottom: '1.5rem' }}>
-                        <img src="/images/logo.png" alt="MaizeScan" style={{ height: '80px', width: 'auto' }} />
+            <style>{`
+                .nav-link-back:hover { background: rgba(255,255,255,0.2) !important; transform: translateX(-3px); }
+            `}</style>
+            <motion.div
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                style={{ 
+                    width: '100%', maxWidth: '580px', padding: '2rem', borderRadius: '1.25rem', 
+                    background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(20px)',
+                    boxShadow: '0 40px 100px rgba(0,0,0,0.1)' 
+                }}
+            >
+                <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+                    <div style={{ display: 'inline-flex', marginBottom: '1rem', background: 'var(--primary-dark)', padding: '0.5rem', borderRadius: '0.75rem' }}>
+                        <img src="/images/logo.png" alt="MaizeScan" style={{ height: '30px', width: 'auto' }} />
                     </div>
-                    <h2 style={{ fontSize: '2.5rem', fontWeight: 950, color: 'var(--primary-dark)', marginBottom: '0.5rem' }}>Network Enrollment</h2>
-                    <p style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Join the world's most advanced maize sorting ecosystem</p>
+                    <h2 style={{ fontSize: '1.6rem', fontWeight: 950, color: 'var(--primary-dark)', marginBottom: '0.2rem' }}>Operator Enrollment</h2>
+                    <p style={{ color: 'var(--text-light)', fontWeight: 600, fontSize: '0.85rem' }}>Create your account to access the AI sorting engine</p>
                 </div>
 
-                <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.85rem' }}>
                     <div style={{ gridColumn: 'span 2' }}>
                         <div style={{ position: 'relative' }}>
-                            <User style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--primary)' }} size={20} />
+                            <User style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)' }} size={16} />
                             <input
                                 type="text"
-                                placeholder="Full Operator Name"
-                                className="form-input"
-                                style={{ paddingLeft: '3.5rem', height: '60px', borderRadius: '1.25rem', background: 'white' }}
+                                placeholder="Full Legal Name"
+                                style={{ 
+                                    width: '100%', padding: '0.75rem 1rem 0.75rem 3.5rem', height: '48px', borderRadius: '0.6rem', 
+                                    border: '1px solid #e2e8f0', background: 'white', fontWeight: 600, outline: 'none', fontSize: '0.9rem'
+                                }}
                                 required
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -78,12 +96,14 @@ const RegisterPage = () => {
                     </div>
 
                     <div style={{ position: 'relative' }}>
-                        <Mail style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--primary)' }} size={20} />
+                        <Mail style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)' }} size={16} />
                         <input
                             type="email"
-                            placeholder="Email Coordinates"
-                            className="form-input"
-                            style={{ paddingLeft: '3.5rem', height: '60px', borderRadius: '1.25rem', background: 'white' }}
+                            placeholder="Email Address"
+                            style={{ 
+                                width: '100%', padding: '0.75rem 1rem 0.75rem 3.5rem', height: '48px', borderRadius: '0.6rem', 
+                                border: '1px solid #e2e8f0', background: 'white', fontWeight: 600, outline: 'none', fontSize: '0.9rem'
+                            }}
                             required
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -91,12 +111,14 @@ const RegisterPage = () => {
                     </div>
 
                     <div style={{ position: 'relative' }}>
-                        <Phone style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--primary)' }} size={20} />
+                        <Phone style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)' }} size={16} />
                         <input
                             type="tel"
-                            placeholder="Comms Number"
-                            className="form-input"
-                            style={{ paddingLeft: '3.5rem', height: '60px', borderRadius: '1.25rem', background: 'white' }}
+                            placeholder="Phone Number"
+                            style={{ 
+                                width: '100%', padding: '0.75rem 1rem 0.75rem 3.5rem', height: '48px', borderRadius: '0.6rem', 
+                                border: '1px solid #e2e8f0', background: 'white', fontWeight: 600, outline: 'none', fontSize: '0.9rem'
+                            }}
                             required
                             value={formData.phone}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -104,12 +126,14 @@ const RegisterPage = () => {
                     </div>
 
                     <div style={{ position: 'relative' }}>
-                        <Lock style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--primary)' }} size={20} />
+                        <Lock style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)' }} size={16} />
                         <input
                             type="password"
-                            placeholder="Create Secure Password"
-                            className="form-input"
-                            style={{ paddingLeft: '3.5rem', height: '60px', borderRadius: '1.25rem', background: 'white' }}
+                            placeholder="Create Password"
+                            style={{ 
+                                width: '100%', padding: '0.75rem 1rem 0.75rem 3.5rem', height: '48px', borderRadius: '0.6rem', 
+                                border: '1px solid #e2e8f0', background: 'white', fontWeight: 600, outline: 'none', fontSize: '0.9rem'
+                            }}
                             required
                             value={formData.password}
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -117,12 +141,14 @@ const RegisterPage = () => {
                     </div>
 
                     <div style={{ position: 'relative' }}>
-                        <MapPin style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--primary)' }} size={20} />
+                        <MapPin style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)' }} size={16} />
                         <input
                             type="text"
-                            placeholder="Geo-Location (Village/Dist)"
-                            className="form-input"
-                            style={{ paddingLeft: '3.5rem', height: '60px', borderRadius: '1.25rem', background: 'white' }}
+                            placeholder="Location (Village / Dist)"
+                            style={{ 
+                                width: '100%', padding: '0.75rem 1rem 0.75rem 3.5rem', height: '48px', borderRadius: '0.6rem', 
+                                border: '1px solid #e2e8f0', background: 'white', fontWeight: 600, outline: 'none', fontSize: '0.9rem'
+                            }}
                             value={formData.location}
                             onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                         />
@@ -130,30 +156,32 @@ const RegisterPage = () => {
 
                     <div style={{ gridColumn: 'span 2' }}>
                         <select
-                            className="form-input"
+                            style={{ 
+                                width: '100%', padding: '0 1rem', height: '48px', borderRadius: '0.6rem', 
+                                border: '1px solid #e2e8f0', background: 'white', fontWeight: 700, cursor: 'pointer', outline: 'none', fontSize: '0.9rem'
+                            }}
                             value={formData.role}
                             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                            style={{ height: '60px', borderRadius: '1.25rem', background: 'white', cursor: 'pointer', fontWeight: 700 }}
                         >
                             <option value="Farmer">Primary Producer (Farmer)</option>
-                            <option value="Lab Technician">Lab Analyst</option>
-                            <option value="Admin">System Administrator</option>
+                            <option value="Lab Technician">Laboratory Analyst</option>
+                            <option value="Admin">Territory Administrator</option>
                         </select>
                     </div>
 
-                    <div style={{ gridColumn: 'span 2', display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.95rem', fontWeight: 600 }}>
-                        <input type="checkbox" required style={{ width: '20px', height: '20px', accentColor: 'var(--primary)' }} />
-                        <span>I accept the <a href="#" style={{ color: 'var(--primary)', fontWeight: 800, textDecoration: 'none' }}>Protocol Terms</a></span>
+                    <div style={{ gridColumn: 'span 2', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-light)' }}>
+                        <input type="checkbox" required style={{ width: '14px', height: '14px', accentColor: 'var(--primary)' }} />
+                        <span>I accept the <a href="#" style={{ color: 'var(--primary)', textDecoration: 'none' }}>MaizeScan Protocol Terms</a></span>
                     </div>
 
-                    <button type="submit" disabled={isSubmitting} className="btn btn-primary shimmer" style={{ gridColumn: 'span 2', height: '70px', borderRadius: '1.5rem', fontSize: '1.25rem', width: '100%', marginTop: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem' }}>
-                        {isSubmitting ? "Syncing to Cloud..." : "Complete Enrollment"} <UserPlus size={24} />
+                    <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ gridColumn: 'span 2', width: '100%', height: '50px', borderRadius: '0.6rem', fontSize: '1rem', marginTop: '0.25rem' }}>
+                        {isSubmitting ? "Validating..." : "Register Identity"} <UserPlus size={18} />
                     </button>
                 </form>
 
-                <div style={{ textAlign: 'center', marginTop: '3rem', borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '2.5rem' }}>
-                    <p style={{ color: 'var(--text-muted)', fontSize: '1rem', fontWeight: 600 }}>
-                        Already have an uplink? <Link to="/login" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 900 }}>Authenticate here</Link>
+                <div style={{ textAlign: 'center', marginTop: '1.5rem', borderTop: '1px solid #f1f5f9', paddingTop: '1.25rem' }}>
+                    <p style={{ color: 'var(--text-light)', fontSize: '0.8rem', fontWeight: 600 }}>
+                        Already enrolled in the network? <Link to="/login" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 900 }}>Authenticate here</Link>
                     </p>
                 </div>
             </motion.div>

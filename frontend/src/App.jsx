@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import {
   Scan, BarChart3, FileText, BookOpen,
-  Settings, LogOut, LayoutDashboard, User, Menu, X
+  Settings, LogOut, LayoutDashboard, User, Menu, X, DollarSign
 } from 'lucide-react';
 import DetectionPage from './pages/DetectionPage';
 import ReportsPage from './pages/ReportsPage';
@@ -10,10 +10,14 @@ import DashboardPage from './pages/DashboardPage';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import FarmerGuidePage from './pages/FarmerGuidePage';
 import ProfilePage from './pages/ProfilePage';
+import RevenuePage from './pages/RevenuePage';
+import FarmerGuidePage from './pages/FarmerGuidePage';
+import CertificatePage from './pages/CertificatePage';
 import axios from 'axios';
 import { Navigate } from 'react-router-dom';
+
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 const App = () => {
   return (
@@ -48,7 +52,7 @@ const AppContent = () => {
     if (!isAuthPage && !isLanding) {
       const token = localStorage.getItem('token');
       if (token) {
-        axios.get('http://localhost:8000/users/me', {
+        axios.get(`${API_URL}/users/me`, {
           headers: { Authorization: `Bearer ${token}` }
         }).then(res => setUser(res.data))
           .catch(() => {
@@ -87,8 +91,10 @@ const AppContent = () => {
             <Route path="/detect" element={<ProtectedRoute><DetectionPage user={user} /></ProtectedRoute>} />
             <Route path="/reports" element={<ProtectedRoute><ReportsPage user={user} /></ProtectedRoute>} />
             <Route path="/analytics" element={<ProtectedRoute><DashboardPage user={user} /></ProtectedRoute>} />
+            <Route path="/revenue" element={<ProtectedRoute><RevenuePage /></ProtectedRoute>} />
             <Route path="/guide" element={<FarmerGuidePage />} />
             <Route path="/profile" element={<ProtectedRoute><ProfilePage user={user} /></ProtectedRoute>} />
+            <Route path="/certificate/:id" element={<ProtectedRoute><CertificatePage user={user} /></ProtectedRoute>} />
           </Routes>
         </main>
       </div>
@@ -99,20 +105,21 @@ const AppContent = () => {
 const PublicHeader = () => (
   <nav className="glass-panel" style={{
     position: 'fixed', top: '1.5rem', left: '50%', transform: 'translateX(-50%)', zIndex: 100,
-    padding: '0.75rem 2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-    width: '90%', maxWidth: '1400px', borderRadius: '3rem', border: '1px solid rgba(255,255,255,0.4)',
-    background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(20px)'
+    padding: '0.6rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    width: '90%', maxWidth: '1200px', borderRadius: '1rem', border: '1px solid rgba(0,0,0,0.05)',
+    background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(20px)',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.03)'
   }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-      <img src="/images/logo.png" alt="MaizeScan Logo" style={{ height: '45px', width: 'auto' }} />
-      <span style={{ fontSize: '1.5rem', fontWeight: 950, color: 'var(--primary-dark)', letterSpacing: '-1px' }}>Maize<span className="gradient-text">Scan</span></span>
+      <img src="/images/logo.png" alt="MaizeScan Logo" style={{ height: '36px', width: 'auto' }} />
+      <span style={{ fontSize: '1.25rem', fontWeight: 950, color: 'var(--primary-dark)', letterSpacing: '-0.02em' }}>Maize<span style={{ color: 'var(--primary)' }}>Scan</span></span>
     </div>
-    <div style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
-      <Link to="/" style={{ color: 'var(--text-main)', fontWeight: 800, textDecoration: 'none', fontSize: '0.95rem' }}>Home</Link>
-      <Link to="/guide" style={{ color: 'var(--text-main)', fontWeight: 800, textDecoration: 'none', fontSize: '0.95rem' }}>Master Guide</Link>
-      <div style={{ width: '1px', height: '20px', background: 'rgba(0,0,0,0.1)' }} />
-      <Link to="/login" style={{ color: 'var(--primary)', fontWeight: 800, textDecoration: 'none', fontSize: '0.95rem' }}>Login</Link>
-      <Link to="/register" className="btn btn-primary shimmer" style={{ padding: '0.75rem 2rem', borderRadius: '2rem', fontSize: '0.9rem' }}>Join Platform</Link>
+    <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+      <Link to="/" className="nav-link">Home</Link>
+      <Link to="/guide" className="nav-link">Master Guide</Link>
+      <div style={{ width: '1px', height: '16px', background: 'rgba(0,0,0,0.1)', margin: '0 0.5rem' }} />
+      <Link to="/login" className="nav-link" style={{ opacity: 1, color: 'var(--primary)' }}>Login</Link>
+      <Link to="/register" className="btn btn-primary" style={{ padding: '0.6rem 1.25rem', borderRadius: '0.5rem', fontSize: '0.85rem' }}>Join Platform</Link>
     </div>
   </nav>
 );
@@ -160,7 +167,7 @@ const Sidebar = ({ isOpen, toggle }) => {
     <div style={{
       width: isOpen ? '300px' : '0',
       transition: 'width 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-      background: '#1b4332',
+      background: '#051F20',
       overflow: 'hidden',
       color: 'white',
       display: 'flex',
@@ -177,6 +184,7 @@ const Sidebar = ({ isOpen, toggle }) => {
         <SidebarLink to="/analytics" icon={<LayoutDashboard size={22} />} label="Analytics Feed" />
         <SidebarLink to="/detect" icon={<Scan size={22} />} label="Live Inspection" />
         <SidebarLink to="/reports" icon={<FileText size={22} />} label="Audit Trail" />
+        <SidebarLink to="/revenue" icon={<DollarSign size={22} />} label="Revenue Model" />
         <SidebarLink to="/guide" icon={<BookOpen size={22} />} label="Farmer Education" />
         <SidebarLink to="/profile" icon={<User size={22} />} label="Account Identity" />
 

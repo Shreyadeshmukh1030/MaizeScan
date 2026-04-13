@@ -22,6 +22,7 @@ const DetectionPage = ({ user }) => {
     const [batchId, setBatchId] = useState(null);
     const [counts, setCounts] = useState(INITIAL_COUNTS);
     const [detections, setDetections] = useState([]);
+    const [logs, setLogs] = useState(["[SYS] AGRI-CORE KERNEL LOADED", "[SYS] YOLOv8_INF_SRV READY"]);
     const [confidenceThreshold, setConfidenceThreshold] = useState(0.5);
     const [isUsingCamera, setIsUsingCamera] = useState(true);
     const [uploadedImage, setUploadedImage] = useState(null);
@@ -170,7 +171,13 @@ const DetectionPage = ({ user }) => {
 
             if (isBatchActive) {
                 const newCounts = { ...counts };
-                res.data.forEach(d => { if (newCounts.hasOwnProperty(d.label)) newCounts[d.label]++; });
+                res.data.forEach(d => { 
+                    if (newCounts.hasOwnProperty(d.label)) {
+                        newCounts[d.label]++; 
+                        // Add to live telemetry log
+                        setLogs(prev => [`[DET] ${d.label.toUpperCase()} detected (conf: ${d.confidence.toFixed(2)})`, ...prev.slice(0, 15)]);
+                    }
+                });
                 setCounts(newCounts);
             }
         } catch (err) {
@@ -261,6 +268,33 @@ const DetectionPage = ({ user }) => {
                     ) : (
                         <img ref={mediaRef} src={uploadedImage} alt="Analysis" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                     )}
+
+                    {/* HUD OVERLAY ELEMENTS */}
+                    <div className="hud-grid" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }} />
+                    <div className="hud-scanline" />
+                    
+                    {/* Telemetry HUD */}
+                    <div style={{ position: 'absolute', top: '1.5rem', left: '1.5rem', zIndex: 20, width: '220px', pointerEvents: 'none' }}>
+                        <div className="telemetry-text" style={{ fontSize: '0.65rem', opacity: 0.8, marginBottom: '0.5rem' }}>AGRI-CORE // TELEMETRY FEED</div>
+                        <div style={{ height: '150px', overflow: 'hidden', maskImage: 'linear-gradient(to top, transparent, black 20%)' }}>
+                            {logs.map((log, i) => (
+                                <motion.div key={i} initial={{ x: -10, opacity: 0 }} animate={{ x: 0, opacity: 1 }} className="telemetry-text">
+                                    {log}
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div style={{ position: 'absolute', bottom: '1.5rem', right: '1.5rem', zIndex: 20, textAlign: 'right', pointerEvents: 'none' }}>
+                        <div className="telemetry-text" style={{ fontSize: '1.5rem', color: '#00C853' }}>{totalCount} <span style={{ fontSize: '0.7rem' }}>SEEDS</span></div>
+                        <div className="telemetry-text" style={{ opacity: 0.6 }}>ACTIVE ANALYSIS MODE</div>
+                    </div>
+
+                    {/* Corner Accents for whole screen */}
+                    <div style={{ position: 'absolute', top: '1rem', left: '1rem', width: '30px', height: '30px', borderTop: '2px solid rgba(255,255,255,0.3)', borderLeft: '2px solid rgba(255,255,255,0.3)' }} />
+                    <div style={{ position: 'absolute', top: '1rem', right: '1rem', width: '30px', height: '30px', borderTop: '2px solid rgba(255,255,255,0.3)', borderRight: '2px solid rgba(255,255,255,0.3)' }} />
+                    <div style={{ position: 'absolute', bottom: '1rem', left: '1rem', width: '30px', height: '30px', borderBottom: '2px solid rgba(255,255,255,0.3)', borderLeft: '2px solid rgba(255,255,255,0.3)' }} />
+                    <div style={{ position: 'absolute', bottom: '1rem', right: '1rem', width: '30px', height: '30px', borderBottom: '2px solid rgba(255,255,255,0.3)', borderRight: '2px solid rgba(255,255,255,0.3)' }} />
 
                     {/* HEATMAP LAYER */}
                     {showHeatmap && (

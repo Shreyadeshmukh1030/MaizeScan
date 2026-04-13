@@ -40,8 +40,8 @@ class SeedDetector:
                 })
             return results
         
-        # Real inference
-        results = self.model(image, conf=conf)[0]
+        # Real inference (Forced CPU usage to prevent overheating)
+        results = self.model(image, conf=conf, device='cpu')[0]
         detections = []
         for box in results.boxes:
             cls = int(box.cls[0])

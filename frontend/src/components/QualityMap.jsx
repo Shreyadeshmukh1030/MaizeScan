@@ -52,13 +52,26 @@ const QualityMap = ({ batches }) => {
                 zIndex: 1000,
                 padding: '0.75rem 1.25rem',
                 borderRadius: '1rem',
-                background: 'rgba(255,255,255,0.85)',
+                background: 'rgba(25, 69, 53, 0.9)',
                 backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255,255,255,0.3)',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+                border: '1px solid rgba(255,255,255,0.1)',
+                boxShadow: '0 4px 30px rgba(0,0,0,0.3)',
+                color: 'white'
             }}>
-                <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: 'var(--primary-dark)' }}>Regional Quality Distribution</h3>
-                <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)' }}>Real-time harvest certification mapping</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div style={{ width: 10, height: 10, background: '#22c55e', borderRadius: '50%', animation: 'pulse-glow 2s infinite' }} />
+                    <h3 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 950, letterSpacing: '1px' }}>GLOBAL HARVEST HUD</h3>
+                </div>
+                <p style={{ margin: '0.2rem 0 0 1.2rem', fontSize: '0.65rem', color: '#86efac', fontWeight: 800 }}>LIVE CLOUD SYNC ACTIVE</p>
+            </div>
+
+            <div className="hud-grid" style={{ position: 'absolute', inset: 0, zIndex: 10, pointerEvents: 'none', opacity: 0.2 }} />
+            <div className="hud-scanline" style={{ zIndex: 11 }} />
+
+            <div style={{ position: 'absolute', bottom: '1.5rem', left: '1.5rem', zIndex: 1000, background: 'rgba(0,0,0,0.4)', padding: '0.5rem 1rem', borderRadius: '0.5rem', color: '#22c55e', fontFamily: 'var(--font-mono)', fontSize: '0.65rem', border: '1px solid rgba(34, 197, 94, 0.3)' }}>
+                LAT_COORD: {center[0].toFixed(4)} <br />
+                LNG_COORD: {center[1].toFixed(4)} <br />
+                SCAN_RAD: 500KM
             </div>
 
             <MapContainer

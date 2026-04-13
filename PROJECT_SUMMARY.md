@@ -17,7 +17,7 @@ The MaizeScan application for automated maize seed quality inspection is now ful
 ### 3. Production-Ready Backend
 - Built with **FastAPI** for high performance.
 - Features:
-  - Persistent **SQLite database** for batch history.
+  - Persistent **PostgreSQL database** for batch history.
   - Advanced **Analytics endpoint** for KPIs and trends.
   - Image-based **Quality Grading** using YOLOv8.
 

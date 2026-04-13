@@ -12,7 +12,7 @@ import numpy as np
 import cv2
 import io
 import models, schemas, database, detection
-from .database import engine, get_db
+from database import engine, get_db
 
 # Load env variables from .env file
 # Load environment variables from the .env file in the backend directory
@@ -97,8 +97,15 @@ def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 @app.post("/token", response_model=schemas.Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    print(f"DEBUG: Login attempt for user: {form_data.username}")
     user = db.query(models.User).filter(models.User.email == form_data.username).first()
+    if not user:
+        print(f"DEBUG: User not found: {form_data.username}")
+    else:
+        print(f"DEBUG: User found, verifying password for: {user.email}")
+    
     if not user or not verify_password(form_data.password, user.hashed_password):
+        print(f"DEBUG: Login failed for: {form_data.username}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or access token",
@@ -137,6 +144,13 @@ def create_batch(batch: schemas.BatchCreate, db: Session = Depends(get_db)):
 @app.get("/batches", response_model=List[schemas.Batch])
 def get_batches(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return db.query(models.Batch).order_by(models.Batch.timestamp.desc()).offset(skip).limit(limit).all()
+
+@app.get("/batches/{batch_id}", response_model=schemas.Batch)
+def get_batch(batch_id: int, db: Session = Depends(get_db)):
+    db_batch = db.query(models.Batch).filter(models.Batch.id == batch_id).first()
+    if not db_batch:
+        raise HTTPException(status_code=404, detail="Batch not found")
+    return db_batch
 
 @app.delete("/batches/{batch_id}")
 def delete_batch(batch_id: int, db: Session = Depends(get_db)):
