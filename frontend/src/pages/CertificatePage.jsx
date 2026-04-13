@@ -8,7 +8,7 @@ import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://maizescan-vmi3.onrender.com';
 
 const CertificatePage = ({ user }) => {
     const { id } = useParams();

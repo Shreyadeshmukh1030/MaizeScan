@@ -17,7 +17,7 @@ import CertificatePage from './pages/CertificatePage';
 import axios from 'axios';
 import { Navigate } from 'react-router-dom';
 
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://maizescan-vmi3.onrender.com';
 
 const App = () => {
   return (

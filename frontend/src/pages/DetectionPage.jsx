@@ -4,7 +4,7 @@ import { Play, Square, Camera, RefreshCw, CheckCircle2, AlertTriangle, FileText,
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://maizescan-vmi3.onrender.com';
 
 const INITIAL_COUNTS = { Excellent: 0, Good: 0, Average: 0, Bad: 0, Worst: 0 };
 

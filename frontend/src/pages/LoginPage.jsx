@@ -17,7 +17,7 @@ const LoginPage = () => {
             params.append('username', formData.email);
             params.append('password', formData.password);
 
-            const API_URL = import.meta.env.VITE_API_URL || '/api';
+            const API_URL = import.meta.env.VITE_API_URL || 'https://maizescan-vmi3.onrender.com';
             const response = await axios.post(`${API_URL}/token`, params, {
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
             });

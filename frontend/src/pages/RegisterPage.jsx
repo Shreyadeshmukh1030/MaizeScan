@@ -15,7 +15,7 @@ const RegisterPage = () => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            const API_URL = import.meta.env.VITE_API_URL || '/api';
+            const API_URL = import.meta.env.VITE_API_URL || 'https://maizescan-vmi3.onrender.com';
             await axios.post(`${API_URL}/register`, {
                 email: formData.email,
                 password: formData.password,

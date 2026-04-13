@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://maizescan-vmi3.onrender.com';
 
 const ReportsPage = ({ user }) => {
     const navigate = useNavigate();
