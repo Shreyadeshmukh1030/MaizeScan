@@ -34,7 +34,11 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Allow all for deployment ease
+    allow_origins=[
+        "http://localhost:5173",
+        "https://maize-scan.vercel.app",
+        "https://maize-scan-git-main-shreyadeshmukh1030s-projects.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
