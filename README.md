@@ -1,314 +1,303 @@
-# 🌽 MaizeScan – AI Powered Maize Seed Quality Analysis Platform
+<div align="center">
 
-**MaizeScan** is an AI-driven agricultural quality inspection platform that automates **maize seed grading using computer vision**.  
-The system uses a **custom-trained YOLOv8 object detection model** to identify and classify maize seeds into **five quality categories**, enabling rapid quality assessment, batch analytics, and digital reporting.
+<img src="https://img.shields.io/badge/AI%20Powered-YOLOv8-brightgreen?style=for-the-badge&logo=python&logoColor=white" />
+<img src="https://img.shields.io/badge/FastAPI-Backend-009688?style=for-the-badge&logo=fastapi&logoColor=white" />
+<img src="https://img.shields.io/badge/React-Frontend-61DAFB?style=for-the-badge&logo=react&logoColor=black" />
+<img src="https://img.shields.io/badge/PostgreSQL-Database-336791?style=for-the-badge&logo=postgresql&logoColor=white" />
+<img src="https://img.shields.io/badge/Deployed%20on-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" />
 
-MaizeScan helps **farmers, researchers, seed labs, and agri-startups** evaluate maize seed quality quickly using **image upload or real-time webcam detection**.
+<br /><br />
 
----
+```
+███╗   ███╗ █████╗ ██╗███████╗███████╗███████╗ ██████╗ █████╗ ███╗   ██╗
+████╗ ████║██╔══██╗██║╚══███╔╝██╔════╝██╔════╝██╔════╝██╔══██╗████╗  ██║
+██╔████╔██║███████║██║  ███╔╝ █████╗  ███████╗███████╗██║  ╚═╝██╔██╗ ██║
+██║╚██╔╝██║██╔══██║██║ ███╔╝  ██╔══╝  ╚════██║██╔══██║██║  ██╗██║╚██╗██║
+██║ ╚═╝ ██║██║  ██║██║███████╗███████╗███████║╚█████╔╝╚█████╔╝██║ ╚████║
+╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝╚══════╝ ╚════╝  ╚════╝ ╚═╝  ╚═══╝
+```
 
-# 🚀 Project Overview
+# 🌽 MaizeScan — AI-Powered Maize Seed Quality Analysis
 
-Traditional seed grading is **manual, time-consuming, and inconsistent**.  
-MaizeScan introduces **AI-assisted visual inspection** to automate the **physical purity screening stage** of maize seed evaluation.
+**Automate seed grading with computer vision. Detect defects in milliseconds. Make better agricultural decisions.**
 
-The platform detects every visible seed in an image and classifies them into five quality grades:
+[🚀 Live Demo](#) · [📖 Documentation](#) · [🐛 Report Bug](../../issues) · [✨ Request Feature](../../issues)
 
-| Class | Meaning | Visualization |
-|------|------|------|
-| Excellent | Fully healthy maize seed | 🟢 Green |
-| Good | Minor imperfections | 🟡 Yellow |
-| Average | Moderate quality | 🟠 Orange |
-| Bad | Visible damage | 🔴 Red |
-| Worst | Severely damaged / moldy | ⚫ Black |
+<br />
 
-The system then calculates **batch quality statistics and assigns a final grade** based on real-world seed grading logic.
-
----
-
-# ✨ Key Features
-
-## 🌾 AI Seed Detection
-- YOLOv8 based real-time seed detection
-- Detects **multiple seeds simultaneously**
-- Accurate **bounding boxes and classification**
-- Supports **image upload and live webcam detection**
+</div>
 
 ---
 
-## 📊 Batch Quality Analysis
-MaizeScan automatically performs **batch-level analytics**:
+## 📽️ Demo
 
-- Total seeds detected
-- Class-wise distribution
-- Quality percentages
-- Visual purity estimation
-- Automated grading
+> **Watch MaizeScan in Action**
 
----
+<div align="center">
 
-## 🧠 Intelligent Grading System
+<!-- Replace the URL below with your actual demo video link -->
+[![MaizeScan Demo Video](https://img.shields.io/badge/▶%20Watch%20Demo-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://your-demo-video-link-here.com)
 
-The platform estimates **visual purity** using seed distribution.
+<!-- 
+  OPTION 1: If you have a video hosted on YouTube / Google Drive / etc., use the badge above.
+  
+  OPTION 2: If you have a GIF of your project, upload it to the repo and embed it like this:
+  <img src="./assets/demo.gif" alt="MaizeScan Demo" width="85%" />
+  
+  OPTION 3: If you uploaded a video to GitHub directly (under /assets), embed thumbnail + link like this:
+  <a href="./assets/demo.mp4">
+    <img src="./assets/thumbnail.png" alt="Click to watch demo" width="85%" />
+  </a>
+-->
 
-### Grade Assignment
-
-| Grade | Condition | Interpretation |
-|------|------|------|
-| Grade A | Sound ≥ 90% & Defective ≤ 3% | Premium seed quality |
-| Grade B | Sound ≥ 80% & Defective ≤ 7% | Commercial grain |
-| Grade C | Sound < 80% | Substandard batch |
-
-⚠️ Note:  
-MaizeScan performs **visual quality screening only**.  
-Germination rate and moisture testing must be conducted separately.
+</div>
 
 ---
 
-# 📊 Analytical Dashboard
+## 🧠 What is MaizeScan?
 
-The platform includes a **personalized analytics dashboard** displaying:
+Traditional seed grading is **manual, slow, and inconsistent** — introducing human error at the most critical stage of the agricultural supply chain.
 
-- Total batches processed
-- Total seeds analyzed
-- Average seed quality
-- Defect rate
-- Historical batch trends
+**MaizeScan** solves this with AI. Upload a batch image or point a webcam at seeds — and within milliseconds, our custom-trained **YOLOv8 model** identifies every visible kernel, classifies it into one of five quality grades, and generates a full analytics report.
 
-### Interactive Graphs
-
-- Quality distribution pie chart
-- Seed count bar chart
-- Batch trend line graph
-- Batch history analytics
-
-All charts include **visible labels and percentages** for presentation-ready insights.
+> Designed for farmers, seed labs, agri-startups, and agricultural researchers.
 
 ---
 
-# 👤 User Management
+## ✨ Key Features
 
-MaizeScan supports **secure multi-user access**.
-
-### Features
-
-- User registration
-- Secure login with JWT authentication
-- Personalized dashboard
-- User profile management
-- Batch history tracking
-
-Each user can view **only their own batch data**, ensuring data privacy.
-
----
-
-# 📄 Automated Reports
-
-For every batch analysis the system generates:
-
-- Seed distribution summary
-- Final grade assignment
-- Batch statistics
-- Detection visualization
-
-Reports can be exported for **documentation and quality records**.
+| Feature | Description |
+|---|---|
+| 🤖 **AI Seed Detection** | YOLOv8-powered real-time detection with bounding boxes and per-seed classification |
+| 📷 **Dual Input Modes** | Supports both image uploads and live webcam streams |
+| 📊 **Batch Analytics** | Automated quality distribution, visual purity score, and defect rate per batch |
+| 🏅 **Smart Grading** | Intelligent Grade A / B / C assignment based on seed distribution logic |
+| 📈 **Analytics Dashboard** | Historical trends, pie charts, bar charts, batch comparison graphs |
+| 📄 **Instant Reports** | Export-ready quality certificates with full batch statistics |
+| 👤 **Secure Multi-User** | JWT-authenticated accounts with private batch history per user |
+| 🌾 **Farmer Knowledge Hub** | Multilingual (English, Hindi, Marathi) guide with defect library and video resources |
 
 ---
 
-# 🌱 Farmer Guide & Knowledge Hub
+## 🌿 Seed Quality Classification
 
-MaizeScan includes an educational **Farmer Guide** designed to help users understand seed quality.
+MaizeScan detects every seed and assigns one of five quality grades:
 
-Content includes:
+```
+┌─────────────┬──────────────────────────────────────┬───────────┐
+│   Grade     │ Description                          │ Indicator │
+├─────────────┼──────────────────────────────────────┼───────────┤
+│ Excellent   │ Fully healthy, defect-free kernel    │ 🟢 Green  │
+│ Good        │ Minor surface imperfections          │ 🟡 Yellow │
+│ Average     │ Moderate quality, visible wear       │ 🟠 Orange │
+│ Bad         │ Visible damage — cracks, discolor    │ 🔴 Red    │
+│ Worst       │ Severely damaged / mold infected     │ ⚫ Black  │
+└─────────────┴──────────────────────────────────────┴───────────┘
+```
 
-- Maize seed grading standards
-- Common maize seed defects
-- Storage best practices
-- Germination improvement tips
-- Visual examples of seed damage
+### 🏅 Batch Grading Logic
 
-The guide is designed to support **farmers, students, and agricultural researchers**.
+| Final Grade | Condition | Interpretation |
+|---|---|---|
+| **Grade A** | Sound seeds ≥ 90% AND Defective ≤ 3% | Premium seed quality |
+| **Grade B** | Sound seeds ≥ 80% AND Defective ≤ 7% | Commercial grain standard |
+| **Grade C** | Sound seeds < 80% | Substandard — not recommended |
 
----
-
-# 🛠 Technology Stack
-
-MaizeScan is built using a modern **AI + Web Application architecture**.
-
-## 🧠 AI Core
-
-- **Ultralytics YOLOv8**
-- **Python 3**
-- **OpenCV**
-- **Custom maize seed dataset**
-
-Used for:
-
-- Object detection
-- Seed classification
-- Image preprocessing
+> ⚠️ MaizeScan performs **visual screening only**. Germination rate and moisture testing must be conducted separately through lab processes.
 
 ---
 
-## ⚙ Backend
+## 🛠️ Technology Stack
 
-- **FastAPI**
-- **SQLAlchemy ORM**
-- **PostgreSQL / Cloud Database**
-- **JWT Authentication**
+<div align="center">
 
-Handles:
+| Layer | Technology | Purpose |
+|---|---|---|
+| 🧠 **AI Core** | Ultralytics YOLOv8 + OpenCV + Python 3.10 | Detection, classification, preprocessing |
+| ⚙️ **Backend** | FastAPI + SQLAlchemy + PostgreSQL (NeonDB) + JWT | API, inference, auth, persistence |
+| 🎨 **Frontend** | React 18 + Vite + Recharts + Framer Motion | UI, analytics, animations |
+| ☁️ **Deployment** | Vercel (Monorepo) | Full-stack deployment |
 
-- AI inference
-- Batch processing
-- User authentication
-- Data persistence
-- API communication
+</div>
 
 ---
 
-## 🎨 Frontend
-
-- **React + Vite**
-- **Modern Glassmorphism UI**
-- **Framer Motion animations**
-- **Recharts for analytics**
-
-Responsible for:
-
-- Detection interface
-- Analytics dashboard
-- Reports visualization
-- User management UI
-
----
-
-# 🔄 System Workflow
+## 🔄 System Architecture
 
 ```mermaid
 graph TD
+    A[📷 Image Upload / Webcam Capture] --> B[⚛️ React Frontend]
+    B -->|POST /api/detect| C[⚡ FastAPI Backend]
+    C --> D[🖼️ OpenCV Preprocessing]
+    D --> E[🤖 YOLOv8 Inference Engine]
+    E --> F[📋 5-Class Seed Classification]
+    F --> G[📊 Batch Statistics Calculator]
+    G --> H[🏅 Grade A / B / C Assignment]
+    H --> I[🗄️ PostgreSQL Cloud Database]
+    I --> J[📈 Analytics Dashboard Sync]
+    J --> K[📄 Report & Certificate Export]
 
-A[User Uploads Image / Webcam Capture] --> B[Frontend Detection Page]
-
-B -->|POST API| C[FastAPI Backend]
-
-C --> D[Image Preprocessing - OpenCV]
-
-D --> E[YOLOv8 AI Model]
-
-E --> F[Seed Classification]
-
-F --> G[Batch Statistics Calculation]
-
-G --> H[Grade Assignment]
-
-H --> I[Database Storage]
-
-I --> J[Analytics Dashboard]
-
-J --> K[Reports & Visualization]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# 🌽 MaizeScan: AI-Driven Seed Quality Analysis
-
-**MaizeScan** is a state-of-the-art, AI-powered platform designed to redefine agricultural quality control. By leveraging **YOLOv8 Computer Vision** and a **Real-Time Data Pipeline**, the system automates the grading of maize seeds with 98% precision, identifying defects such as insect damage, mold, and mechanical cracks in milliseconds.
-
----
-
-## ✨ Features that "WOW"
-- **Mission Control Dashboard**: A high-fidelity, real-time analytics interface that tracks seed health across global harvesting batches.
-- **AI Live Detection**: Real-time batch analysis using a custom-trained YOLOv8 model for 5-class seed grading (Excellent to Worst).
-- **Regional Quality Mapping**: Interactive geospatial visualization showing crop quality across different geographical zones.
-- **Farmer Master Class**: A multilingual (English, Hindi, Marathi) educational portal featuring a detailed Defect Library and HD video guides.
-- **Digital Certification**: Instant generation of quality reports and automated Grade A/B/C assignments.
-
----
-
-## 🛠️ The Technology Stack
-MaizeScan is built using a modern **Decoupled Monorepo Architecture**:
-
-### **AI Core (The Brain)**
-- **Ultralytics YOLOv8**: Real-time object detection and 5-class classification.
-- **OpenCV**: Image pre-processing and camera stream management.
-- **Python 3.10**: The primary language for high-performance AI inference.
-
-### **Backend (The Logic Engine)**
-- **FastAPI**: Asynchronous Python API framework for ultra-low latency.
-- **SQLAlchemy**: Robust ORM for managing batch data and harvest trends.
-- **PostgreSQL (NeonDB)**: Distributed cloud database for persistent history.
-- **JWT Shell**: Secure, token-based authentication for operators.
-
-### **Frontend (The Command Center)**
-- **React 18 + Vite**: High-performance single-page application framework.
-- **Glassmorphism CSS**: A premium, translucent UI design system for a high-tech aesthetic.
-- **Recharts**: Responsive SVG-based analytics for time-series and radial quality data.
-- **Framer Motion**: Smooth, cinematic transitions and micro-animations.
-
----
-
-## 🔄 Project Technical Flow
-
-```mermaid
-graph TD
-    A[Operator Image Capture] -->|POST /api/detect| B[FastAPI Backend]
-    B -->|Pre-processing| C[OpenCV Normalization]
-    C -->|Inference| D[YOLOv8 AI Model]
-    D -->|Classification| E[5-Class Aggregation]
-    E -->|Grading Logic| F[Grade A/B/C Assignment]
-    F -->|Persistence| G[Cloud PostgreSQL Database]
-    G -->|Real-Time Sink| H[React Sync Dashboard]
+    style A fill:#2d6a4f,color:#fff
+    style E fill:#1b4332,color:#fff
+    style K fill:#40916c,color:#fff
 ```
 
-1.  **Capture**: The frontend uses standard media APIs to capture a sample of maize seeds.
-2.  **Inference**: The FastAPI backend processes the image in **<200ms**, identifying every single kernel's structural health.
-3.  **Analysis**: The system calculates a weighted quality score based on the distribution of "Bad" and "Moldy" seeds.
-4.  **Action**: Results are pushed to a central database, instantly updating the global dashboard for management.
+**Pipeline summary:**
+1. **Capture** — Frontend captures a seed tray image via upload or webcam
+2. **Inference** — FastAPI backend processes the image in under 200ms, identifying every kernel
+3. **Analysis** — Weighted quality scores computed from seed class distribution
+4. **Storage** — Results persisted to cloud DB and immediately reflected in the dashboard
+5. **Export** — Presentation-ready reports and grade certificates generated on demand
 
 ---
 
-## 🚀 Deployment (Vercel)
-This project is pre-configured for **Vercel Monorepo Deployment**.
+## 🚀 Getting Started
 
-1.  Push code to GitHub.
-2.  Import to Vercel.
-3.  Add `DATABASE_URL`, `SECRET_KEY`, and `ALGORITHM` to Environment Variables.
-4.  Vercel automatically detects the `vercel.json` and builds the dual-stack app.
+### Prerequisites
 
----
+- Python 3.10+
+- Node.js 18+
+- PostgreSQL (or a NeonDB cloud connection string)
 
-## 🏗️ Getting Started (Local Development)
+### 1. Clone the Repository
 
-### **1. AI Backend**
-```powershell
-# From root
-.\.venv\Scripts\python.exe -m uvicorn backend.main:app --reload --port 8000
+```bash
+git clone https://github.com/your-username/maizescan.git
+cd maizescan
 ```
 
-### **2. Premium Frontend**
-```powershell
-# From /frontend
+### 2. Set Up the AI Backend
+
+```bash
+# Create and activate virtual environment
+python -m venv .venv
+.\.venv\Scripts\activate       # Windows
+source .venv/bin/activate      # macOS / Linux
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Configure environment variables
+cp .env.example .env
+# → Fill in DATABASE_URL, SECRET_KEY, ALGORITHM in .env
+
+# Start the backend server
+python -m uvicorn backend.main:app --reload --port 8000
+```
+
+### 3. Start the Frontend
+
+```bash
+cd frontend
+npm install
 npm run dev -- --port 5173
 ```
 
+Then open [http://localhost:5173](http://localhost:5173) in your browser.
+
 ---
-**Build for the Future of Sustainable Agriculture. Build with MaizeScan.** 🌽✨
+
+## ☁️ Deployment (Vercel)
+
+This project is pre-configured for **Vercel Monorepo Deployment**:
+
+1. Push the repository to GitHub
+2. Import it into [Vercel](https://vercel.com)
+3. Add the following environment variables in the Vercel dashboard:
+   - `DATABASE_URL`
+   - `SECRET_KEY`
+   - `ALGORITHM`
+4. Deploy — Vercel auto-detects `vercel.json` and builds both the frontend and backend
+
+---
+
+## 📊 Analytics Dashboard
+
+The personalized dashboard gives every user a full view of their seed inspection history:
+
+- **Summary cards** — Total batches, total seeds analyzed, average quality score, defect rate
+- **Quality pie chart** — Visual distribution across all 5 seed classes
+- **Batch trend graph** — Quality score over time for longitudinal tracking
+- **Seed count bar chart** — Comparison across batch sessions
+- **Batch history table** — Searchable, sortable record of all past analyses
+
+---
+
+## 📖 Farmer Knowledge Hub
+
+The built-in educational portal supports **farmers, students, and agricultural researchers**:
+
+- Maize seed grading standards explained
+- Illustrated defect library (mold, insect damage, mechanical cracks)
+- Storage best practices and post-harvest guides
+- Germination improvement tips
+- Available in **English, Hindi, and Marathi**
+
+---
+
+## 📁 Project Structure
+
+```
+maizescan/
+├── backend/
+│   ├── main.py               # FastAPI entry point
+│   ├── models/               # SQLAlchemy ORM models
+│   ├── routers/              # API route handlers
+│   ├── ai/                   # YOLOv8 inference module
+│   └── utils/                # Grading logic, preprocessing
+├── frontend/
+│   ├── src/
+│   │   ├── pages/            # Detection, Dashboard, Reports, Guide
+│   │   ├── components/       # Reusable UI components
+│   │   └── api/              # Axios API client
+│   └── vite.config.js
+├── model/
+│   └── maize_yolov8.pt       # Custom-trained YOLOv8 weights
+├── vercel.json               # Vercel monorepo config
+└── README.md
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Here's how:
+
+```bash
+# 1. Fork the repository
+# 2. Create your feature branch
+git checkout -b feature/AmazingFeature
+
+# 3. Commit your changes
+git commit -m 'Add AmazingFeature'
+
+# 4. Push to the branch
+git push origin feature/AmazingFeature
+
+# 5. Open a Pull Request
+```
+
+---
+
+## 📜 License
+
+Distributed under the MIT License. See [`LICENSE`](./LICENSE) for details.
+
+---
+
+## 🙏 Acknowledgements
+
+- [Ultralytics YOLOv8](https://github.com/ultralytics/ultralytics) — Object detection framework
+- [FastAPI](https://fastapi.tiangolo.com/) — High-performance Python API framework
+- [NeonDB](https://neon.tech/) — Serverless PostgreSQL
+- [Vercel](https://vercel.com/) — Deployment platform
+
+---
+
+<div align="center">
+
+**Built with ❤️ for the Future of Sustainable Agriculture**
+
+🌽 *MaizeScan — See every seed. Grade every batch. Trust every harvest.*
+
+</div>
