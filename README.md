@@ -36,7 +36,7 @@
 <div align="center">
 
 <!-- Replace the URL below with your actual demo video link -->
-[![MaizeScan Demo Video](https://img.shields.io/badge/▶%20Watch%20Demo-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://your-demo-video-link-here.com)
+[![MaizeScan Demo Video](https://youtu.be/_HE1PwKX_Qc?si=1DxWf72WpRy7D9pv)
 
 <!-- 
   OPTION 1: If you have a video hosted on YouTube / Google Drive / etc., use the badge above.
