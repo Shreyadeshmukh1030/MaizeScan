@@ -36,7 +36,7 @@
 <div align="center">
 
 <!-- Replace the URL below with your actual demo video link -->
-[![MaizeScan Demo Video](https://youtu.be/_HE1PwKX_Qc?si=1DxWf72WpRy7D9pv)
+[![MaizeScan Demo Video](https://img.shields.io/badge/▶%20Watch%20Demo-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/_HE1PwKX_Qc?si=1DxWf72WpRy7D9pv)
 
 <!-- 
   OPTION 1: If you have a video hosted on YouTube / Google Drive / etc., use the badge above.
@@ -151,51 +151,6 @@ graph TD
 
 ---
 
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Python 3.10+
-- Node.js 18+
-- PostgreSQL (or a NeonDB cloud connection string)
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/your-username/maizescan.git
-cd maizescan
-```
-
-### 2. Set Up the AI Backend
-
-```bash
-# Create and activate virtual environment
-python -m venv .venv
-.\.venv\Scripts\activate       # Windows
-source .venv/bin/activate      # macOS / Linux
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Configure environment variables
-cp .env.example .env
-# → Fill in DATABASE_URL, SECRET_KEY, ALGORITHM in .env
-
-# Start the backend server
-python -m uvicorn backend.main:app --reload --port 8000
-```
-
-### 3. Start the Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev -- --port 5173
-```
-
-Then open [http://localhost:5173](http://localhost:5173) in your browser.
-
----
 
 ## ☁️ Deployment (Vercel)
 
@@ -259,32 +214,6 @@ maizescan/
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! Here's how:
-
-```bash
-# 1. Fork the repository
-# 2. Create your feature branch
-git checkout -b feature/AmazingFeature
-
-# 3. Commit your changes
-git commit -m 'Add AmazingFeature'
-
-# 4. Push to the branch
-git push origin feature/AmazingFeature
-
-# 5. Open a Pull Request
-```
-
----
-
-## 📜 License
-
-Distributed under the MIT License. See [`LICENSE`](./LICENSE) for details.
-
----
-
 ## 🙏 Acknowledgements
 
 - [Ultralytics YOLOv8](https://github.com/ultralytics/ultralytics) — Object detection framework
@@ -296,7 +225,7 @@ Distributed under the MIT License. See [`LICENSE`](./LICENSE) for details.
 
 <div align="center">
 
-**Built with ❤️ for the Future of Sustainable Agriculture**
+**Built for the Future of Sustainable Agriculture**
 
 🌽 *MaizeScan — See every seed. Grade every batch. Trust every harvest.*
 
