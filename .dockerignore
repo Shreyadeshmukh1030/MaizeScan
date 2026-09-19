@@ -1,0 +1,13 @@
+.git
+.venv
+dataset/
+yolo_dataset/
+runs/
+label_debug/
+training/
+frontend/
+__pycache__/
+*.pyc
+*.db
+!backend/seed_model.pt
+.env
